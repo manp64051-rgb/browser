@@ -14,32 +14,58 @@ function createTab(url = "https://google.com") {
   webview.src = url;
   webview.style.display = 'none';
   webview.dataset.id = id;
-
+  webview.setAttribute('allowpopups', '');
   viewContainer.appendChild(webview);
 
   const tabButton = document.createElement('button');
-  tabButton.innerText = 'New Tab';
+  tabButton.className = 'tab';
+  tabButton.innerText = 'Loading...';
   tabButton.dataset.id = id;
   tabButton.onclick = () => switchTab(id);
 
-  tabsBar.appendChild(tabButton);
+  document.getElementById('tabs').appendChild(tabButton);
 
   tabs.push({ id, webview, tabButton });
+
+  // 🔥 Update tab title when page loads
+  webview.addEventListener('page-title-updated', (e) => {
+    tabButton.innerText = e.title.substring(0, 20);
+  });
+
+  // 🔥 Update address bar when URL changes
+  webview.addEventListener('did-navigate', (e) => {
+    if (id === activeTabId) urlInput.value = e.url;
+  });
+
   switchTab(id);
 }
 
 function switchTab(id) {
   tabs.forEach(tab => {
-    tab.webview.style.display = tab.id === id ? 'flex' : 'none';
-    tab.tabButton.classList.toggle('active', tab.id === id);
+    const active = tab.id === id;
+    tab.webview.style.display = active ? 'flex' : 'none';
+    tab.tabButton.classList.toggle('active', active);
   });
+
   activeTabId = id;
+
+  const activeWebview = getActiveWebview();
+  if (activeWebview) {
+    urlInput.value = activeWebview.getURL();
+  }
 }
+
 
 function getActiveWebview() {
   return tabs.find(t => t.id === activeTabId)?.webview;
 }
 document.getElementById('new-tab').onclick = () => createTab();
+
+urlInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    document.getElementById('go').click();
+  }
+});
 
 document.getElementById('go').onclick = () => {
   const webview = getActiveWebview();
