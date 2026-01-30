@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+#tabs-bar {
+  display: flex;
+  background: #222;
+  padding: 5px;
+}
+
+#tabs-bar button {
+  margin-right: 5px;
+  background: #333;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+}
+
+#tabs-bar button.active {
+  background: #555;
+}
+
+#controls {
+  display: flex;
+  padding: 8px;
+  background: #eee;
+}
+
+#controls input {
+  flex: 1;
+  margin: 0 8px;
+  padding: 6px;
+}
+
+#view-container {
+  height: calc(100vh - 90px);
+}
+
+webview {
+  width: 100%;
+  height: 100%;
+}
